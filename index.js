@@ -178,6 +178,8 @@ function generateFullHTML(dirPath) {
         document.addEventListener('DOMContentLoaded', function() {
             // 添加文件夹点击展开/折叠功能
             document.querySelectorAll('.folder-name').forEach(folder => {
+                const ul = folder.nextElementSibling;
+                ul.style.display = 'none';
                 folder.addEventListener('click', function() {
                     const ul = this.nextElementSibling;
                     if (ul && ul.tagName === 'UL') {
