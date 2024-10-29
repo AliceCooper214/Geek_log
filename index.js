@@ -2,7 +2,8 @@ const fs = require("fs");
 const path = require("path");
 
 // 定义需要忽略的文件夹和文件
-const IGNORED_PATHS = [".git", "node_modules", ".DS_Store", "thumbs.db"];
+const IGNORED_PATHS = [".git", "node_modules", ".DS_Store", "thumbs.db", "index.js", "index.html"];
+const DOMAIN = "https://alicecooper214.github.io/Geek_log/";
 
 // 判断是否应该忽略该路径
 function shouldIgnore(itemName) {
@@ -58,7 +59,7 @@ function generateDirHTML(dirPath, basePath = "") {
     const fileIcon = getFileIcon(fileExtension);
     html += `<li class="file">
             <span class="file-icon">${fileIcon}</span>
-            <a href="https://alicecooper214.github.io/Geek_log/${relativePath}">${item}</a>
+            <a href="#" data-path="${DOMAIN}\/${relativePath}" onclick="loadFile('${DOMAIN}\/${relativePath}'); return false;">${item}</a>
         </li>\n`;
   });
 
@@ -103,17 +104,45 @@ function generateFullHTML(dirPath) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Directory Structure</title>
     <style>
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
             font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
+        }
+        
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        
+        .directory-tree {
+            width: 300px;
+            height: 100%;
+            overflow-y: auto;
             background-color: #f5f5f5;
+            padding: 20px;
+            box-sizing: border-box;
+            border-right: 1px solid #ddd;
+        }
+        
+        .content-view {
+            flex: 1;
+            height: 100%;
+        }
+        
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
         
         h1 {
             color: #333;
-            text-align: center;
+            font-size: 1.5em;
+            margin-top: 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
         }
         
         .folder { 
@@ -160,23 +189,23 @@ function generateFullHTML(dirPath) {
             font-style: italic;
         }
         
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
             }
             
-            .file {
-                margin-left: 10px;
+            .directory-tree {
+                width: 100%;
+                height: 300px;
             }
             
-            ul {
-                padding-left: 10px;
+            .content-view {
+                height: calc(100vh - 300px);
             }
         }
     </style>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 添加文件夹点击展开/折叠功能
             document.querySelectorAll('.folder-name').forEach(folder => {
                 const ul = folder.nextElementSibling;
                 ul.style.display = 'none';
@@ -188,18 +217,29 @@ function generateFullHTML(dirPath) {
                 });
             });
         });
+        
+        function loadFile(filePath) {
+            const iframe = document.getElementById('content-iframe');
+            iframe.src = filePath;
+        }
     </script>
 </head>
 <body>
-    <h1>Directory Structure</h1>
-    ${dirContent}
+    <div class="container">
+        <div class="directory-tree">
+            <h1>Directory Structure</h1>
+            ${dirContent}
+        </div>
+        <div class="content-view">
+            <iframe id="content-iframe" name="content-iframe" src="about:blank"></iframe>
+        </div>
+    </div>
 </body>
 </html>`;
 
   try {
-    // 将生成的HTML写入文件
     fs.writeFileSync("index.html", html);
-    console.log("Successfully generated directory-structure.html");
+    console.log("Successfully generated index.html");
   } catch (err) {
     console.error("Error writing HTML file:", err);
   }
