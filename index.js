@@ -3,7 +3,7 @@ const path = require("path");
 
 // 定义需要忽略的文件夹和文件
 const IGNORED_PATHS = [".git", "node_modules", ".DS_Store", "thumbs.db", "index.js", "index.html"];
-const DOMAIN = "https://alicecooper214.github.io/Geek_log/";
+const DOMAIN = "https://alicecooper214.github.io/Geek_log";
 
 // 判断是否应该忽略该路径
 function shouldIgnore(itemName) {
@@ -57,9 +57,11 @@ function generateDirHTML(dirPath, basePath = "") {
   files.forEach(({ item, relativePath }) => {
     const fileExtension = path.extname(item).toLowerCase();
     const fileIcon = getFileIcon(fileExtension);
+    // 将 Windows 格式的反斜杠替换为 Web 格式的正斜杠
+    const webPath = `${DOMAIN}/${relativePath}`.replace(/\\/g, '/');
     html += `<li class="file">
             <span class="file-icon">${fileIcon}</span>
-            <a href="#" data-path="${DOMAIN}\/${relativePath}" onclick="loadFile('${DOMAIN}\/${relativePath}'); return false;">${item}</a>
+            <a href="#" data-path="${webPath}" onclick="loadFile('${webPath}'); return false;">${item}</a>
         </li>\n`;
   });
 
